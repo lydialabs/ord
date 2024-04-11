@@ -10,6 +10,7 @@ mod batch_command;
 pub mod cardinals;
 pub mod create;
 pub mod dump;
+mod dup_utxo;
 pub mod inscribe;
 pub mod inscriptions;
 pub mod mint;
@@ -48,6 +49,8 @@ pub(crate) enum Subcommand {
   Create(create::Create),
   #[command(about = "Dump wallet descriptors")]
   Dump,
+  #[command(about = "Generate multiple duplicated UTXO")]
+  DupUtxo(dup_utxo::DupUtxo),
   #[command(about = "Create inscription")]
   Inscribe(inscribe::Inscribe),
   #[command(about = "List wallet inscriptions")]
@@ -98,6 +101,7 @@ impl WalletCommand {
       Subcommand::Balance => balance::run(wallet),
       Subcommand::Batch(batch) => batch.run(wallet),
       Subcommand::Dump => dump::run(wallet),
+      Subcommand::DupUtxo(dup_utxo) => dup_utxo.run(wallet),
       Subcommand::Inscribe(inscribe) => inscribe.run(wallet),
       Subcommand::Inscriptions => inscriptions::run(wallet),
       Subcommand::Mint(mint) => mint.run(wallet),
