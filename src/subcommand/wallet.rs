@@ -14,6 +14,7 @@ mod dup_utxo;
 pub mod inscribe;
 pub mod inscriptions;
 pub mod mint;
+pub mod mint_bumpfee;
 pub mod outputs;
 pub mod receive;
 pub mod restore;
@@ -57,6 +58,8 @@ pub(crate) enum Subcommand {
   Inscriptions,
   #[command(about = "Mint a rune")]
   Mint(mint::Mint),
+  #[command(about = "Mint a rune with bumpfee")]
+  MintBumpfee(mint_bumpfee::MintBumpfee),
   #[command(about = "Generate receive address")]
   Receive(receive::Receive),
   #[command(about = "Restore wallet")]
@@ -105,6 +108,7 @@ impl WalletCommand {
       Subcommand::Inscribe(inscribe) => inscribe.run(wallet),
       Subcommand::Inscriptions => inscriptions::run(wallet),
       Subcommand::Mint(mint) => mint.run(wallet),
+      Subcommand::MintBumpfee(mint_bumpfee) => mint_bumpfee.run(wallet),
       Subcommand::Receive(receive) => receive.run(wallet),
       Subcommand::Resume => resume::run(wallet),
       Subcommand::Sats(sats) => sats.run(wallet),
