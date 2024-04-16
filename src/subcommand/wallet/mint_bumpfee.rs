@@ -11,6 +11,8 @@ pub(crate) struct MintBumpfee {
     help = "Include <AMOUNT> postage with mint output. [default: 10000sat]"
   )]
   postage: Option<Amount>,
+  #[clap(long, help = "Send minted runes to <DESTINATION>.")]
+  destination: Option<Address<NetworkUnchecked>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -43,18 +45,17 @@ impl MintBumpfee {
       .mintable(block_height)
       .map_err(|err| anyhow!("rune {rune} {err}"))?;
 
-    let destination = wallet.get_change_address()?;
-    let destination2 = wallet.get_change_address()?;
+    let chain = wallet.chain();
+
+    let destination = match self.destination {
+      Some(destination) => destination.require_network(chain.network())?,
+      None => wallet.get_change_address()?,
+    };
 
     ensure!(
       destination.script_pubkey().dust_value() < postage,
       "postage below dust limit of {}sat",
       destination.script_pubkey().dust_value().to_sat()
-    );
-    ensure!(
-      destination2.script_pubkey().dust_value() < postage,
-      "postage below dust limit of {}sat",
-      destination2.script_pubkey().dust_value().to_sat()
     );
 
     let runestone = Runestone {
@@ -84,17 +85,13 @@ impl MintBumpfee {
           script_pubkey: destination.script_pubkey(),
           value: postage.to_sat(),
         },
-        TxOut {
-          script_pubkey: destination2.script_pubkey(),
-          value: postage.to_sat(),
-        },
       ],
     };
 
     wallet.lock_non_cardinal_outputs()?;
 
     let unsigned_transaction =
-      fund_raw_transaction(bitcoin_client, self.fee_rate, &unfunded_transaction)?;
+      fund_raw_transaction_bumpfee(bitcoin_client, self.fee_rate, &unfunded_transaction)?;
 
     let signed_transaction = bitcoin_client
       .sign_raw_transaction_with_wallet(&unsigned_transaction, None, None)?
