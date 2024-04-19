@@ -13,6 +13,7 @@ pub mod dump;
 mod dup_utxo;
 pub mod inscribe;
 pub mod inscriptions;
+mod label;
 pub mod mint;
 pub mod mint_bumpfee;
 pub mod outputs;
@@ -46,6 +47,8 @@ pub(crate) enum Subcommand {
   Balance,
   #[command(about = "Create inscriptions and runes")]
   Batch(batch_command::Batch),
+  #[command(about = "List unspent cardinal outputs in wallet")]
+  Cardinals,
   #[command(about = "Create new wallet")]
   Create(create::Create),
   #[command(about = "Dump wallet descriptors")]
@@ -56,10 +59,14 @@ pub(crate) enum Subcommand {
   Inscribe(inscribe::Inscribe),
   #[command(about = "List wallet inscriptions")]
   Inscriptions,
+  #[command(about = "Export output labels")]
+  Label,
   #[command(about = "Mint a rune")]
   Mint(mint::Mint),
   #[command(about = "Mint a rune with bumpfee")]
   MintBumpfee(mint_bumpfee::MintBumpfee),
+  #[command(about = "List all unspent outputs in wallet")]
+  Outputs,
   #[command(about = "Generate receive address")]
   Receive(receive::Receive),
   #[command(about = "Restore wallet")]
@@ -72,10 +79,6 @@ pub(crate) enum Subcommand {
   Send(send::Send),
   #[command(about = "See wallet transactions")]
   Transactions(transactions::Transactions),
-  #[command(about = "List all unspent outputs in wallet")]
-  Outputs,
-  #[command(about = "List unspent cardinal outputs in wallet")]
-  Cardinals,
 }
 
 impl WalletCommand {
@@ -103,20 +106,21 @@ impl WalletCommand {
     match self.subcommand {
       Subcommand::Balance => balance::run(wallet),
       Subcommand::Batch(batch) => batch.run(wallet),
+      Subcommand::Cardinals => cardinals::run(wallet),
+      Subcommand::Create(_) | Subcommand::Restore(_) => unreachable!(),
       Subcommand::Dump => dump::run(wallet),
       Subcommand::DupUtxo(dup_utxo) => dup_utxo.run(wallet),
       Subcommand::Inscribe(inscribe) => inscribe.run(wallet),
       Subcommand::Inscriptions => inscriptions::run(wallet),
+      Subcommand::Label => label::run(wallet),
       Subcommand::Mint(mint) => mint.run(wallet),
       Subcommand::MintBumpfee(mint_bumpfee) => mint_bumpfee.run(wallet),
+      Subcommand::Outputs => outputs::run(wallet),
       Subcommand::Receive(receive) => receive.run(wallet),
       Subcommand::Resume => resume::run(wallet),
       Subcommand::Sats(sats) => sats.run(wallet),
       Subcommand::Send(send) => send.run(wallet),
       Subcommand::Transactions(transactions) => transactions.run(wallet),
-      Subcommand::Outputs => outputs::run(wallet),
-      Subcommand::Cardinals => cardinals::run(wallet),
-      Subcommand::Create(_) | Subcommand::Restore(_) => unreachable!(),
     }
   }
 }

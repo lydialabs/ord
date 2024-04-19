@@ -635,6 +635,7 @@ fn get_runes() {
     }
   );
 }
+
 #[test]
 fn get_runes_balances() {
   let core = mockcore::builder().network(Network::Regtest).build();
