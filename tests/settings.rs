@@ -7,6 +7,7 @@ fn default() {
     .stdout_regex(
       r#"\{
   "bitcoin_data_dir": ".*(Bitcoin|bitcoin)",
+  "bitcoin_rpc_limit": 12,
   "bitcoin_rpc_password": null,
   "bitcoin_rpc_url": "127.0.0.1:8332",
   "bitcoin_rpc_username": null,
@@ -20,6 +21,7 @@ fn default() {
   "height_limit": null,
   "hidden": \[\],
   "index": ".*index\.redb",
+  "index_addresses": false,
   "index_cache_size": \d+,
   "index_runes": false,
   "index_sats": false,
