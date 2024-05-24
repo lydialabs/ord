@@ -180,6 +180,7 @@ fn fund_raw_transaction(
 fn fund_raw_transaction_bumpfee(
   client: &Client,
   fee_rate: FeeRate,
+  change_address: Address,
   unfunded_transaction: &Transaction,
 ) -> Result<Vec<u8>> {
   let mut buffer = Vec::new();
@@ -203,6 +204,7 @@ fn fund_raw_transaction_bumpfee(
           // by 1000.
           fee_rate: Some(Amount::from_sat((fee_rate.n() * 1000.0).ceil() as u64)),
           change_position: Some(0.try_into()?),
+          change_address: Some(change_address),
           ..default()
         }),
         Some(false),
