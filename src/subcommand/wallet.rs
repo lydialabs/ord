@@ -10,10 +10,12 @@ mod batch_command;
 pub mod cardinals;
 pub mod create;
 pub mod dump;
+mod dup_utxo;
 pub mod inscribe;
 pub mod inscriptions;
 mod label;
 pub mod mint;
+pub mod mint_bumpfee;
 pub mod outputs;
 pub mod receive;
 pub mod restore;
@@ -51,6 +53,8 @@ pub(crate) enum Subcommand {
   Create(create::Create),
   #[command(about = "Dump wallet descriptors")]
   Dump,
+  #[command(about = "Generate multiple duplicated UTXO")]
+  DupUtxo(dup_utxo::DupUtxo),
   #[command(about = "Create inscription")]
   Inscribe(inscribe::Inscribe),
   #[command(about = "List wallet inscriptions")]
@@ -59,6 +63,8 @@ pub(crate) enum Subcommand {
   Label,
   #[command(about = "Mint a rune")]
   Mint(mint::Mint),
+  #[command(about = "Mint a rune with bumpfee")]
+  MintBumpfee(mint_bumpfee::MintBumpfee),
   #[command(about = "List all unspent outputs in wallet")]
   Outputs,
   #[command(about = "Generate receive address")]
@@ -103,10 +109,12 @@ impl WalletCommand {
       Subcommand::Cardinals => cardinals::run(wallet),
       Subcommand::Create(_) | Subcommand::Restore(_) => unreachable!(),
       Subcommand::Dump => dump::run(wallet),
+      Subcommand::DupUtxo(dup_utxo) => dup_utxo.run(wallet),
       Subcommand::Inscribe(inscribe) => inscribe.run(wallet),
       Subcommand::Inscriptions => inscriptions::run(wallet),
       Subcommand::Label => label::run(wallet),
       Subcommand::Mint(mint) => mint.run(wallet),
+      Subcommand::MintBumpfee(mint_bumpfee) => mint_bumpfee.run(wallet),
       Subcommand::Outputs => outputs::run(wallet),
       Subcommand::Receive(receive) => receive.run(wallet),
       Subcommand::Resume(resume) => resume.run(wallet),
