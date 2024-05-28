@@ -80,7 +80,7 @@ impl MintBumpfee {
       ],
     };
 
-    wallet.lock_non_cardinal_outputs()?;
+    // wallet.lock_non_cardinal_outputs()?;
 
     let unsigned_transaction =
       fund_raw_transaction_bumpfee(bitcoin_client, self.fee_rate, destination.clone(), &unfunded_transaction)?;
